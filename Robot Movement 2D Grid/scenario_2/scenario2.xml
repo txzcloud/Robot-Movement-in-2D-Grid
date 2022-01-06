@@ -1,0 +1,343 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE nta PUBLIC '-//Uppaal Team//DTD Flat System 1.1//EN' 'http://www.it.uu.se/research/group/darts/uppaal/flat-1_2.dtd'>
+<nta>
+	<declaration>// Place global declarations here.
+//global channels
+chan req;
+chan ack;
+
+
+//obstacle existence
+bool ob = false;
+
+//robot generated coordinates x' = x+-1 and y' = y+-1
+int bx = 0;
+int by = 0;
+
+
+//robot generated coordinates with stronger sensign capability, x' = x+-2 and y' = y+-2
+int cx = 0;
+int cy = 0;
+
+
+
+//grid dimension FIXED
+const int dimX = 4;
+const int dimY = 4;
+
+//target coordinates CHANGEABLE/FIXED
+const int dx = 4;
+const int dy = 4; 
+
+//robot's coordinate
+int x = 0;
+int y = 0;
+
+
+</declaration>
+	<template>
+		<name x="5" y="5">robot</name>
+		<declaration>
+//robot sets (bx,by) AND sends query to GRID
+//chan req;
+//clock wait;
+</declaration>
+		<location id="id0" x="-1878" y="-1505">
+			<name x="-1888" y="-1539">move_x</name>
+		</location>
+		<location id="id1" x="-2244" y="-1292">
+			<name x="-2261" y="-1326">move_left</name>
+		</location>
+		<location id="id2" x="-1589" y="-1623">
+			<name x="-1599" y="-1657">move_right</name>
+		</location>
+		<location id="id3" x="-1589" y="-1505">
+			<name x="-1599" y="-1539">move_y</name>
+		</location>
+		<location id="id4" x="-1190" y="-1564">
+			<name x="-1200" y="-1598">move_up</name>
+		</location>
+		<location id="id5" x="-1190" y="-1292">
+			<name x="-1200" y="-1326">move_down</name>
+		</location>
+		<location id="id6" x="-2541" y="-1504">
+			<name x="-2551" y="-1538">goal</name>
+		</location>
+		<location id="id7" x="-1734" y="-1708">
+			<name x="-1744" y="-1742">wait_r</name>
+		</location>
+		<location id="id8" x="-2244" y="-1088">
+			<name x="-2254" y="-1122">wait_l</name>
+		</location>
+		<location id="id9" x="-1190" y="-1742">
+			<name x="-1200" y="-1776">wait_u</name>
+		</location>
+		<location id="id10" x="-1878" y="-1802">
+			<name x="-1888" y="-1836">receive_r</name>
+		</location>
+		<location id="id11" x="-1768" y="-952">
+			<name x="-1793" y="-943">receive_l</name>
+		</location>
+		<location id="id12" x="-1190" y="-1870">
+			<name x="-1200" y="-1904">receive_u</name>
+		</location>
+		<location id="id13" x="-1190" y="-1088">
+			<name x="-1200" y="-1122">wait_d</name>
+		</location>
+		<location id="id14" x="-1598" y="-986">
+			<name x="-1608" y="-1020">receive_d</name>
+		</location>
+		<location id="id15" x="-1734" y="-1445">
+			<name x="-1744" y="-1479">initial</name>
+		</location>
+		<init ref="id15"/>
+		<transition>
+			<source ref="id3"/>
+			<target ref="id0"/>
+			<label kind="guard" x="-1793" y="-1164">dy &lt;= y &amp;&amp; x &gt;= 0</label>
+			<nail x="-1734" y="-1088"/>
+		</transition>
+		<transition>
+			<source ref="id0"/>
+			<target ref="id3"/>
+			<label kind="guard" x="-1793" y="-1292">dx &lt;= x &amp;&amp; y &gt;= 0</label>
+			<nail x="-1734" y="-1232"/>
+		</transition>
+		<transition>
+			<source ref="id14"/>
+			<target ref="id0"/>
+			<label kind="guard" x="-2057" y="-1181">ob == false</label>
+			<label kind="assignment" x="-2048" y="-1156">y:= y-1</label>
+			<nail x="-1657" y="-1003"/>
+			<nail x="-2108" y="-1122"/>
+			<nail x="-2108" y="-1258"/>
+		</transition>
+		<transition>
+			<source ref="id11"/>
+			<target ref="id3"/>
+			<label kind="guard" x="-1453" y="-1207">ob == false</label>
+			<label kind="assignment" x="-1445" y="-1173">x:= x-1</label>
+			<nail x="-1360" y="-1122"/>
+			<nail x="-1360" y="-1258"/>
+		</transition>
+		<transition>
+			<source ref="id15"/>
+			<target ref="id3"/>
+		</transition>
+		<transition>
+			<source ref="id15"/>
+			<target ref="id0"/>
+		</transition>
+		<transition>
+			<source ref="id14"/>
+			<target ref="id0"/>
+			<label kind="guard" x="-2371" y="-943">ob == true</label>
+			<nail x="-1598" y="-909"/>
+			<nail x="-2482" y="-918"/>
+			<nail x="-2482" y="-1428"/>
+		</transition>
+		<transition>
+			<source ref="id13"/>
+			<target ref="id14"/>
+			<label kind="synchronisation" x="-1402" y="-1062">ack?</label>
+		</transition>
+		<transition>
+			<source ref="id5"/>
+			<target ref="id13"/>
+			<label kind="synchronisation" x="-1173" y="-1207">req!</label>
+		</transition>
+		<transition>
+			<source ref="id12"/>
+			<target ref="id3"/>
+			<label kind="guard" x="-1411" y="-1759">ob == false</label>
+			<label kind="assignment" x="-1411" y="-1742">y:= y+1</label>
+		</transition>
+		<transition>
+			<source ref="id12"/>
+			<target ref="id0"/>
+			<label kind="guard" x="-1649" y="-1895">ob == true</label>
+			<nail x="-2006" y="-1870"/>
+			<nail x="-2006" y="-1564"/>
+		</transition>
+		<transition>
+			<source ref="id9"/>
+			<target ref="id12"/>
+			<label kind="synchronisation" x="-1181" y="-1836">ack?</label>
+		</transition>
+		<transition>
+			<source ref="id11"/>
+			<target ref="id3"/>
+			<label kind="guard" x="-1215" y="-952">ob == true</label>
+			<nail x="-986" y="-952"/>
+			<nail x="-986" y="-1428"/>
+			<nail x="-1207" y="-1479"/>
+		</transition>
+		<transition>
+			<source ref="id8"/>
+			<target ref="id11"/>
+			<label kind="synchronisation" x="-2040" y="-1045">ack?</label>
+		</transition>
+		<transition>
+			<source ref="id10"/>
+			<target ref="id0"/>
+			<label kind="guard" x="-1963" y="-1708">ob == false</label>
+			<label kind="assignment" x="-1963" y="-1691">x:= x+1</label>
+		</transition>
+		<transition>
+			<source ref="id10"/>
+			<target ref="id3"/>
+			<label kind="guard" x="-1649" y="-1827">ob == true</label>
+			<nail x="-1463" y="-1802"/>
+		</transition>
+		<transition>
+			<source ref="id7"/>
+			<target ref="id10"/>
+			<label kind="synchronisation" x="-1802" y="-1776">ack?</label>
+		</transition>
+		<transition>
+			<source ref="id3"/>
+			<target ref="id6"/>
+			<label kind="guard" x="-2006" y="-883">x == dx &amp;&amp; y == dy</label>
+			<nail x="-918" y="-1496"/>
+			<nail x="-918" y="-884"/>
+			<nail x="-2550" y="-883"/>
+		</transition>
+		<transition>
+			<source ref="id4"/>
+			<target ref="id9"/>
+			<label kind="synchronisation" x="-1190" y="-1657">req!</label>
+		</transition>
+		<transition>
+			<source ref="id1"/>
+			<target ref="id8"/>
+			<label kind="synchronisation" x="-2235" y="-1207">req!</label>
+		</transition>
+		<transition>
+			<source ref="id2"/>
+			<target ref="id7"/>
+			<label kind="synchronisation" x="-1657" y="-1683">req!</label>
+		</transition>
+		<transition>
+			<source ref="id0"/>
+			<target ref="id6"/>
+			<label kind="guard" x="-2422" y="-1530">y == dy &amp;&amp; x == dx</label>
+		</transition>
+		<transition>
+			<source ref="id3"/>
+			<target ref="id5"/>
+			<label kind="guard" x="-1428" y="-1453">dy &lt;= y  &amp;&amp; x == 0</label>
+			<label kind="assignment" x="-1411" y="-1428">by:= y-1</label>
+		</transition>
+		<transition>
+			<source ref="id3"/>
+			<target ref="id4"/>
+			<label kind="guard" x="-1436" y="-1581">dy &gt; y &amp;&amp; y &lt; dimY</label>
+			<label kind="assignment" x="-1436" y="-1564">by:= y+1, bx:= x, cy:= y+2, cx:= x</label>
+		</transition>
+		<transition>
+			<source ref="id0"/>
+			<target ref="id3"/>
+			<label kind="guard" x="-1768" y="-1530">ob == true</label>
+		</transition>
+		<transition>
+			<source ref="id0"/>
+			<target ref="id1"/>
+			<label kind="guard" x="-2167" y="-1436">dx &lt;= x &amp;&amp; y == 0</label>
+			<label kind="assignment" x="-2167" y="-1419">bx:= x-1</label>
+		</transition>
+		<transition>
+			<source ref="id0"/>
+			<target ref="id2"/>
+			<label kind="guard" x="-1819" y="-1623">dx &gt; x &amp;&amp; x &lt; dimX</label>
+			<label kind="assignment" x="-1819" y="-1598">bx:= x+1, by:= y, cx:= x+2, cy:= y</label>
+		</transition>
+	</template>
+	<template>
+		<name>grid</name>
+		<declaration>
+//GRID sets OB, then acknowledges REQ from robot
+//chan ack;
+
+//checking if robot attempts to move to coordinates that has an obstacle
+bool check(int x, int y){
+   bool temp;
+   if((x == 1 &amp;&amp; y == 1) || (x == 1 &amp;&amp; y == 2) || (x == 1 &amp;&amp; y == 4) || (x == 3 &amp;&amp; y == 3) || (x == 4 &amp;&amp; y == 1) ){
+        temp = true; 
+    }
+
+    // all free obstacled cells
+    else{
+        temp = false;
+    }
+
+    return temp;
+}
+
+//instead use the temp vars in global and record the robot's coord at the first moment ob == true and x or y = dimX/dimY
+//store in temp vars and place in another check function like above to create it.
+//in the model, decrement the x or y 
+
+
+</declaration>
+		<location id="id16" x="-100" y="136">
+			<name x="-136" y="153">curr_position</name>
+		</location>
+		<location id="id17" x="-340" y="-110">
+			<name x="-357" y="-144">blocked</name>
+		</location>
+		<init ref="id16"/>
+		<transition>
+			<source ref="id17"/>
+			<target ref="id16"/>
+			<label kind="synchronisation" x="-510" y="68">ack!</label>
+			<label kind="assignment" x="-544" y="85">ob:= check(bx,by)</label>
+			<label kind="comments" x="-569" y="-484">if reached at blocked state,
+have edge move the next state back to start to check for other coordinate that are free
+
+also send a signal to robot to have it decrement its coordinates</label>
+			<nail x="-476" y="34"/>
+			<nail x="-476" y="102"/>
+			<nail x="-382" y="102"/>
+		</transition>
+		<transition>
+			<source ref="id16"/>
+			<target ref="id17"/>
+			<label kind="synchronisation" x="-246" y="34">req?</label>
+			<label kind="assignment" x="-322" y="13">ob:= check(cx,cy)</label>
+			<label kind="comments" x="-892" y="-484">guard: check if (x,y) = any obstacle coordinates
+
+OR
+
+check if (bx,by) = any obstacle coordinates
+
+all blocked cells:
+
+(1,1), (1,2), (1,4), (3,3), (4,1),</label>
+		</transition>
+	</template>
+	<system>// Place template instantiations here.
+Machine = robot();
+Map1 = grid(); 
+
+
+//Process2 = robot2();
+// List one or more processes to be composed into a system.
+
+system Machine, Map1;
+
+    </system>
+	<queries>
+		<query>
+			<formula>E&lt;&gt;Machine.goal</formula>
+			<comment>There exist at least one path for the robot (Machine) to reach the target block cell.</comment>
+		</query>
+		<query>
+			<formula>A&lt;&gt;Map1.curr_position and ((x!=1 and y!=1) or (x!=1 and y!=2) or (x!=1 and y!=4) or (x!=3 and y!=3) or (x!=4 and y!=1))</formula>
+			<comment>For all current positions of the robot, it does not hit any block cell that has an obstacle</comment>
+		</query>
+		<query>
+			<formula>A&lt;&gt;Map1.curr_position and ((x&gt;=0 and x&lt;=4) and (y&gt;=0 and y&lt;=4))</formula>
+			<comment>For all current positions of the robot, it does not cross any boundaries greater than the size of the grid.</comment>
+		</query>
+	</queries>
+</nta>

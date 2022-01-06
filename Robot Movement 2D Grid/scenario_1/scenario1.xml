@@ -1,0 +1,306 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE nta PUBLIC '-//Uppaal Team//DTD Flat System 1.1//EN' 'http://www.it.uu.se/research/group/darts/uppaal/flat-1_2.dtd'>
+<nta>
+	<declaration>// Place global declarations here.
+//global channels
+chan req;
+chan ack;
+
+//robot generated coordinates
+int bx = 0;
+int by = 0;
+
+//grid dimension FIXED
+const int dimX = 5;
+const int dimY = 5;
+
+//target coordinates CHANGEABLE/FIXED
+const int dx = 4;
+const int dy = 4; 
+
+
+//robot's current coordinates
+int rx = 0;
+int ry = 0;
+
+//vars for the grid
+bool ob = false;
+//setting obstacle in grid array
+int arrGrid[dimY][dimX] = {{0,0,0,0,1}, {0,1,1,0,1}, {0,0,0,0,0}, {0,0,0,1,0}, {1,1,0,0,0}};
+</declaration>
+	<template>
+		<name x="5" y="5">robot</name>
+		<declaration>
+//robot sets (bx,by) AND sends query to GRID
+
+
+
+//for project 2
+clock x;
+clock z;</declaration>
+		<location id="id0" x="-323" y="187">
+			<name x="-340" y="153">initial_x</name>
+			<urgent/>
+		</location>
+		<location id="id1" x="-323" y="-17">
+			<name x="-348" y="-51">initial_y</name>
+			<label kind="invariant" x="-348" y="-68">x &lt;= 1</label>
+		</location>
+		<location id="id2" x="-119" y="187">
+			<name x="-144" y="195">move_right</name>
+		</location>
+		<location id="id3" x="-527" y="187">
+			<name x="-561" y="195">move_left</name>
+		</location>
+		<location id="id4" x="51" y="187">
+			<name x="34" y="153">req_r</name>
+			<label kind="invariant" x="34" y="195">x &lt;= 5</label>
+		</location>
+		<location id="id5" x="221" y="187">
+			<name x="211" y="153">ack_r</name>
+			<label kind="invariant" x="211" y="204">x &lt;= 1</label>
+		</location>
+		<location id="id6" x="-697" y="187">
+			<name x="-707" y="153">req_l</name>
+			<label kind="invariant" x="-714" y="195">x &lt;= 5</label>
+		</location>
+		<location id="id7" x="-867" y="187">
+			<name x="-884" y="153">ack_l</name>
+		</location>
+		<location id="id8" x="-119" y="-17">
+			<name x="-144" y="-51">move_up</name>
+		</location>
+		<location id="id9" x="51" y="-17">
+			<name x="41" y="-51">req_u</name>
+			<label kind="invariant" x="34" y="-8">x &lt;= 5</label>
+		</location>
+		<location id="id10" x="221" y="-17">
+			<name x="211" y="-51">ack_u</name>
+			<label kind="invariant" x="211" y="0">x &lt;= 1</label>
+		</location>
+		<location id="id11" x="-535" y="-17">
+			<name x="-569" y="-51">move_down</name>
+		</location>
+		<location id="id12" x="-697" y="-17">
+			<name x="-707" y="-51">req_d</name>
+			<label kind="invariant" x="-714" y="-8">x &lt;= 5</label>
+		</location>
+		<location id="id13" x="-867" y="-17">
+			<name x="-877" y="-51">ack_d</name>
+		</location>
+		<location id="id14" x="-323" y="85">
+			<name x="-333" y="51">goal</name>
+		</location>
+		<init ref="id0"/>
+		<transition>
+			<source ref="id0"/>
+			<target ref="id1"/>
+			<nail x="-416" y="76"/>
+		</transition>
+		<transition>
+			<source ref="id1"/>
+			<target ref="id0"/>
+			<nail x="-221" y="76"/>
+		</transition>
+		<transition>
+			<source ref="id0"/>
+			<target ref="id14"/>
+			<label kind="guard" x="-391" y="110">rx == dx &amp;&amp; ry == dy</label>
+		</transition>
+		<transition>
+			<source ref="id1"/>
+			<target ref="id14"/>
+			<label kind="guard" x="-391" y="25">ry == dy &amp;&amp; rx == dx</label>
+		</transition>
+		<transition>
+			<source ref="id10"/>
+			<target ref="id0"/>
+			<label kind="guard" x="136" y="8">ob == true</label>
+		</transition>
+		<transition>
+			<source ref="id13"/>
+			<target ref="id0"/>
+			<label kind="guard" x="-850" y="8">ob == true</label>
+		</transition>
+		<transition>
+			<source ref="id10"/>
+			<target ref="id1"/>
+			<label kind="guard" x="144" y="-195">ob == false</label>
+			<label kind="assignment" x="144" y="-178">ry:= ry+1</label>
+			<nail x="221" y="-221"/>
+		</transition>
+		<transition>
+			<source ref="id13"/>
+			<target ref="id1"/>
+			<label kind="guard" x="-867" y="-195">ob == false</label>
+			<label kind="assignment" x="-867" y="-178">ry:= ry-1</label>
+			<nail x="-867" y="-221"/>
+		</transition>
+		<transition>
+			<source ref="id12"/>
+			<target ref="id13"/>
+			<label kind="guard" x="-790" y="-17">x &gt; 0</label>
+			<label kind="synchronisation" x="-790" y="-34">ack?</label>
+		</transition>
+		<transition>
+			<source ref="id11"/>
+			<target ref="id12"/>
+			<label kind="synchronisation" x="-629" y="-34">req!</label>
+			<label kind="assignment" x="-629" y="-17">x:= 0</label>
+		</transition>
+		<transition>
+			<source ref="id9"/>
+			<target ref="id10"/>
+			<label kind="guard" x="119" y="-17">x &gt; 0</label>
+			<label kind="synchronisation" x="119" y="-34">ack?</label>
+		</transition>
+		<transition>
+			<source ref="id8"/>
+			<target ref="id9"/>
+			<label kind="synchronisation" x="-42" y="-34">req!</label>
+			<label kind="assignment" x="-42" y="-17">x:= 0</label>
+		</transition>
+		<transition>
+			<source ref="id1"/>
+			<target ref="id8"/>
+			<label kind="guard" x="-263" y="-51">dy &gt; ry &amp;&amp; x &gt;= 1</label>
+			<label kind="assignment" x="-272" y="-34">by:= ry+1, bx:= rx</label>
+		</transition>
+		<transition>
+			<source ref="id1"/>
+			<target ref="id11"/>
+			<label kind="guard" x="-484" y="-51">dy &lt; ry &amp;&amp; x &gt;= 1</label>
+			<label kind="assignment" x="-484" y="-34">by:= ry-1, bx:= rx</label>
+		</transition>
+		<transition>
+			<source ref="id7"/>
+			<target ref="id1"/>
+			<label kind="guard" x="-850" y="136">ob == true</label>
+			<nail x="-578" y="76"/>
+		</transition>
+		<transition>
+			<source ref="id7"/>
+			<target ref="id0"/>
+			<label kind="guard" x="-858" y="331">ob == false</label>
+			<label kind="assignment" x="-858" y="348">rx:= rx-1</label>
+			<nail x="-867" y="391"/>
+		</transition>
+		<transition>
+			<source ref="id6"/>
+			<target ref="id7"/>
+			<label kind="guard" x="-790" y="187">x &gt; 0</label>
+			<label kind="synchronisation" x="-790" y="170">ack?</label>
+		</transition>
+		<transition>
+			<source ref="id3"/>
+			<target ref="id6"/>
+			<label kind="synchronisation" x="-620" y="170">req!</label>
+			<label kind="assignment" x="-620" y="187">x:= 0</label>
+		</transition>
+		<transition>
+			<source ref="id5"/>
+			<target ref="id1"/>
+			<label kind="guard" x="136" y="127">ob == true</label>
+			<nail x="-42" y="85"/>
+		</transition>
+		<transition>
+			<source ref="id5"/>
+			<target ref="id0"/>
+			<label kind="guard" x="153" y="340">ob == false</label>
+			<label kind="assignment" x="161" y="357">rx:= rx+1</label>
+			<nail x="221" y="399"/>
+		</transition>
+		<transition>
+			<source ref="id4"/>
+			<target ref="id5"/>
+			<label kind="guard" x="110" y="187">x &gt; 0</label>
+			<label kind="synchronisation" x="110" y="170">ack?</label>
+		</transition>
+		<transition>
+			<source ref="id2"/>
+			<target ref="id4"/>
+			<label kind="synchronisation" x="-51" y="170">req!</label>
+			<label kind="assignment" x="-51" y="187">x:= 0</label>
+		</transition>
+		<transition>
+			<source ref="id0"/>
+			<target ref="id3"/>
+			<label kind="guard" x="-493" y="170">dx &lt; rx &amp;&amp; x &gt;= 1</label>
+			<label kind="assignment" x="-501" y="187">bx:= rx-1, by:= ry</label>
+		</transition>
+		<transition>
+			<source ref="id0"/>
+			<target ref="id2"/>
+			<label kind="guard" x="-280" y="170">dx &gt; rx &amp;&amp; x &gt;= 1</label>
+			<label kind="assignment" x="-289" y="187">bx:= rx+1, by:= ry</label>
+		</transition>
+	</template>
+	<template>
+		<name>grid</name>
+		<declaration>
+
+//for project 2
+clock y;
+</declaration>
+		<location id="id15" x="-100" y="136">
+			<name x="-136" y="153">curr_position</name>
+		</location>
+		<location id="id16" x="-340" y="-110">
+			<name x="-357" y="-144">blocked</name>
+			<label kind="invariant" x="-357" y="-161">y &lt;= 1</label>
+		</location>
+		<init ref="id15"/>
+		<transition>
+			<source ref="id16"/>
+			<target ref="id15"/>
+			<label kind="guard" x="-391" y="-34">y == 1</label>
+			<label kind="synchronisation" x="-382" y="-17">ack!</label>
+			<label kind="comments" x="-901" y="34">if reached at blocked state,
+have edge move the next state back to start to check for other coordinate that are free
+
+also send a signal to robot to have it decrement its coordinates</label>
+			<nail x="-340" y="102"/>
+			<nail x="-340" y="170"/>
+			<nail x="-246" y="170"/>
+		</transition>
+		<transition>
+			<source ref="id15"/>
+			<target ref="id16"/>
+			<label kind="synchronisation" x="-161" y="-17">req?</label>
+			<label kind="assignment" x="-212" y="0">ob:= arrGrid[by][bx], y:= 0</label>
+			<label kind="comments" x="-698" y="-472">guard: check if (x,y) = any obstacle coordinates
+
+OR
+
+check if (bx,by) = any obstacle coordinates
+
+all blocked cells:
+
+(1,1), (1,2), (1,4), (3,3), (4,1),</label>
+		</transition>
+	</template>
+	<system>// Place template instantiations here.
+Machine = robot();
+Map1 = grid(); 
+
+//Process2 = robot2();
+// List one or more processes to be composed into a system.
+
+system Machine, Map1;
+
+    </system>
+	<queries>
+		<query>
+			<formula>E&lt;&gt; (Machine.goal)</formula>
+			<comment>There exist at least one path for the robot (Machine) to reach the target block cell.</comment>
+		</query>
+		<query>
+			<formula>A[] ((rx!=1 and ry!=1) || (rx!=1 and ry!=2) || (rx!=1 and ry!=4) || (rx!=3 and ry!=3) || (rx!=4 and ry!=1))</formula>
+			<comment>For all current positions of the robot, it does not hit any block cell that has an obstacle</comment>
+		</query>
+		<query>
+			<formula>A[] ((rx &gt;= 0 &amp;&amp; rx &lt;= 4) &amp;&amp; (ry &gt;= 0 &amp;&amp; ry &lt;= 4))</formula>
+			<comment>For all current positions of the robot, it does not cross any boundaries greater than the size of the grid.</comment>
+		</query>
+	</queries>
+</nta>
